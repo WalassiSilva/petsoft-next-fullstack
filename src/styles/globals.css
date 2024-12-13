@@ -2,3 +2,6 @@
 @tailwind components;
 @tailwind utilities;
   
+.block-container {
+  @apply bg-[#f7f8fa] shadow-sm rounded-md overflow-hidden h-full w-full;
+}
