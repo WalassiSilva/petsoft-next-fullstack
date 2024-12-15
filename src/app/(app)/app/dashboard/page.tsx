@@ -1,11 +1,12 @@
-import BrandingSection from "@/components/branding-section";
-import PetDetails from "@/components/pet-details";
+import React from "react";
 import PetList from "@/components/pet-list";
+import PetDetails from "@/components/pet-details";
 import SearchForm from "@/components/search-form";
 import StatsSection from "@/components/stats-section";
-import React from "react";
+import BrandingSection from "@/components/branding-section";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  
   return (
     <main>
       <div className="flex items-center justify-between text-white py-8 ">
