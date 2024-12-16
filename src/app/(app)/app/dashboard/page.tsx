@@ -4,6 +4,8 @@ import PetDetails from "@/components/pet-details";
 import SearchForm from "@/components/search-form";
 import StatsSection from "@/components/stats-section";
 import BrandingSection from "@/components/branding-section";
+import { PlusIcon } from "@radix-ui/react-icons";
+import PetButton from "@/components/pet-button";
 
 export default async function DashboardPage() {
   
@@ -20,8 +22,11 @@ export default async function DashboardPage() {
         </div>
 
         <div className="md:row-start-2 md:row-span-full md:col-start-1 md:col-span-1">
-          <div className="block-container">
+          <div className="block-container relative">
             <PetList />
+            <div className="absolute bottom-4 right-4">
+              <PetButton typeAction="add" ><PlusIcon className="h-6 w-6" /></PetButton>
+            </div>
           </div>
         </div>
 
