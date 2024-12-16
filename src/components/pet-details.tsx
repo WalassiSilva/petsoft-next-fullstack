@@ -1,5 +1,5 @@
 "use client";
-import { usePetContext } from "@/hooks";
+import { usePetContext } from "@/lib/hooks";
 import { Pet } from "@/lib/types";
 import Image from "next/image";
 import React from "react";
