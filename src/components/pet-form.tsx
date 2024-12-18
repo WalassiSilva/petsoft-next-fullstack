@@ -11,11 +11,11 @@ type PetButtonProps = {
   onFormSubmit: () => void;
 };
 export default function PetForm({ typeAction, onFormSubmit }: PetButtonProps) {
-  const { handleAddPet, selectedPet } = usePetContext();
+  const { handleAddPet, selectedPet, handleEditPet } = usePetContext();
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const newPet = {
+    const pet = {
       name: formData.get("name") as string,
       ownerName: formData.get("ownerName") as string,
       imageUrl:
@@ -24,7 +24,12 @@ export default function PetForm({ typeAction, onFormSubmit }: PetButtonProps) {
       age: +(formData.get("age") as string),
       notes: formData.get("notes") as string,
     };
-    handleAddPet(newPet);
+
+    if(typeAction === "add") {
+      handleAddPet(pet);
+    } else{
+      handleEditPet(selectedPet!.id, pet )
+    }
 
     onFormSubmit();
   };
