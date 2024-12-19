@@ -22,11 +22,11 @@ export const PetContext = createContext<TPetContext | null>(null);
 
 export default function PetContextProvider({
   children,
-  data,
+  data: pets,
 }: PetContextProviderProps) {
   // STATE
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
-  const [pets, setPets] = useState(data);
+  // const [pets, setPets] = useState(data);
 
   // COMPUTED STATE
   const selectedPet = pets.find((pet) => pet.id === selectedPetId);
