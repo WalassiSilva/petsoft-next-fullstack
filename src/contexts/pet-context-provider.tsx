@@ -29,8 +29,23 @@ export default function PetContextProvider({
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
   const [optimisticPets, setOptimisticPets] = useOptimistic(
     data,
-    (state, newPet) => {
-      return [...state, { ...newPet, id: Date.now().toString() }];
+    (state, { action, payload }) => {
+      switch (action) {
+        case "add":
+          return [...state, { ...payload, id: Date.now().toString() }];
+        case "edit":
+          return state.map((pet) => {
+            if (pet.id === payload.id) {
+              return { ...pet, ...payload.updatedPet };
+            }
+            return pet;
+          });
+
+        case "delete":
+          return state.filter((pet) => pet.id !== payload);
+        default:
+          return state;
+      }
     }
   );
   // const [pets, setPets] = useState(data);
@@ -43,12 +58,8 @@ export default function PetContextProvider({
   const handleSelectedPetId = (id: string) => {
     setSelectedPetId(id);
   };
-  const handleCheckoutPet = async (petId: string) => {
-    await deletePet(petId);
-    setSelectedPetId(null);
-  };
   const handleAddPet = async (newPet: Omit<Pet, "id">) => {
-    setOptimisticPets(newPet);
+    setOptimisticPets({ action: "add", payload: newPet });
     const error = await addPet(newPet);
     if (error) {
       toast.warning(error.message);
@@ -56,11 +67,21 @@ export default function PetContextProvider({
     }
   };
   const handleEditPet = async (petId: string, updatedPet: Omit<Pet, "id">) => {
+    setOptimisticPets({ action: "edit", payload: { id: petId, updatedPet } });
     const error = await editPet(petId, updatedPet);
     if (error) {
       toast.warning(error.message);
       return;
     }
+  };
+  const handleCheckoutPet = async (petId: string) => {
+    setOptimisticPets({ action: "delete", payload: petId });
+    const error = await deletePet(petId);
+    if (error) {
+      toast.warning(error.message);
+      return;
+    }
+    setSelectedPetId(null);
   };
 
   return (
