@@ -4,28 +4,33 @@ import { usePetContext } from "@/lib/hooks";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { addPet, editPet } from "@/actions";
 import PetFormBtn from "./pet-form-btn";
-import { toast } from "sonner";
 
 type PetButtonProps = {
   typeAction: "edit" | "add";
   onFormSubmit: () => void;
 };
 export default function PetForm({ typeAction, onFormSubmit }: PetButtonProps) {
-  const { selectedPet } = usePetContext();
+  const { selectedPet, handleAddPet, handleEditPet } = usePetContext();
 
   return (
     <form
       action={async (formData) => {
+        onFormSubmit();
+        
+        const petData = {
+          name: formData.get("name") as string,
+          ownerName: formData.get("ownerName") as string,
+          age: parseInt(formData.get("age") as string),
+          imageUrl:
+            (formData.get("imageUrl") as string) ||
+            "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png",
+          notes: formData.get("notes") as string,
+        };
         if (typeAction === "add") {
-          const error = await addPet(formData);
-          if (error) toast.warning(error.message);
-          onFormSubmit();
+          await handleAddPet(petData);
         } else if (typeAction === "edit") {
-          const error = await editPet(selectedPet!.id, formData);
-          if (error) toast.warning(error.message);
-          onFormSubmit();
+          await handleEditPet(selectedPet!.id, petData);
         }
       }}
       className="flex flex-col"

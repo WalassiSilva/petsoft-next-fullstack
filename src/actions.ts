@@ -5,19 +5,11 @@ import { Pet } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { sleep } from "./lib/utils";
 
-export async function addPet(formData) {
+export async function addPet(pet) {
   await sleep();
   try {
     await prisma.pet.create({
-      data: {
-        name: formData.get("name"),
-        ownerName: formData.get("ownerName"),
-        age: parseInt(formData.get("age")),
-        imageUrl:
-          formData.get("imageUrl") ||
-          "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png",
-        notes: formData.get("notes"),
-      },
+      data: pet,
     });
     revalidatePath("/app", "layout");
   } catch (error) {
@@ -25,21 +17,27 @@ export async function addPet(formData) {
   }
 }
 
-export async function editPet(petId, formData) {
+export async function editPet(petId, updatedPet) {
   await sleep();
   try {
     await prisma.pet.update({
       where: { id: petId },
-      data: {
-        name: formData.get("name"),
-        ownerName: formData.get("ownerName"),
-        age: parseInt(formData.get("age")),
-        imageUrl: formData.get("imageUrl"),
-        notes: formData.get("notes"),
-      },
+      data: updatedPet,
     });
     revalidatePath("/app", "layout");
   } catch (error) {
     return { message: "Error while editing the pet." };
+  }
+}
+
+export async function deletePet(petId: string) {
+  await sleep();
+  try {
+    await prisma.pet.delete({
+      where: { id: petId },
+    });
+    revalidatePath("/app", "layout");
+  } catch (error) {
+    return { message: "Error while deleting the pet" };
   }
 }
