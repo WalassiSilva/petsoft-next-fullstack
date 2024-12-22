@@ -13,13 +13,6 @@ type PetButtonProps = {
   typeAction: "edit" | "add";
   onFormSubmit: () => void;
 };
-type TPetForm = {
-  name: string;
-  ownerName: string;
-  age: number;
-  imageUrl: string;
-  notes: string;
-};
 
 const petFormSchema = z.object({
   name: z
@@ -38,6 +31,9 @@ const petFormSchema = z.object({
   age: z.coerce.number().int().positive().max(999),
   notes: z.union([z.literal(""), z.string().trim().max(1000)]),
 });
+
+type TPetForm = z.infer<typeof petFormSchema>;
+
 export default function PetForm({ typeAction, onFormSubmit }: PetButtonProps) {
   const { selectedPet, handleAddPet, handleEditPet } = usePetContext();
 
