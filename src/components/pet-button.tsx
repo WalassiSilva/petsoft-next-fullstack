@@ -27,7 +27,13 @@ export default function PetButton({
 
   if (typeAction === "checkout") {
     return (
-      <Button disabled={disabled} variant="secondary" onClick={onClick}>
+      <Button
+        disabled={disabled}
+        variant="secondary"
+        onClick={onClick}
+        title="Checkout"
+        size="icon"
+      >
         {children}
       </Button>
     );
@@ -37,9 +43,13 @@ export default function PetButton({
     <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
       <DialogTrigger asChild>
         {typeAction === "add" ? (
-          <Button size="icon">{children}</Button>
+          <Button size="icon" title="Add Pet">
+            {children}
+          </Button>
         ) : (
-          <Button variant="secondary">{children}</Button>
+          <Button variant="secondary" title={typeAction} size="icon">
+            {children}
+          </Button>
         )}
       </DialogTrigger>
       <DialogContent>

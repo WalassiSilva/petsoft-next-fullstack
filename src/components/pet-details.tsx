@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useTransition } from "react";
 import PetButton from "./pet-button";
 import { Pet } from "@prisma/client";
+import { Pencil1Icon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 
 type Props = {
   pet: Pet;
@@ -39,12 +40,12 @@ function TopBar({ pet }: Props) {
       <h2 className="text-3xl font-semibold leading-7 ml-5">{pet.name}</h2>
 
       <div className="ml-auto space-x-2">
-        <PetButton typeAction="edit">Edit</PetButton>
+        <PetButton typeAction="edit"><Pencil2Icon /></PetButton>
         <PetButton
           typeAction="checkout"
           onClick={async () => await handleCheckoutPet(pet.id)}
         >
-          Checkout
+          <TrashIcon />
         </PetButton>
       </div>
     </div>
