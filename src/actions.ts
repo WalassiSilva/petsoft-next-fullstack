@@ -7,6 +7,7 @@ import { petFormSchema, petIdSchema } from "./lib/validations";
 import { auth, signIn, signOut } from "./lib/auth";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
+import { checkAuth } from "./lib/server-utils";
 
 //--------------- user actions ------------------//
 export async function logIn(formData: FormData) {
@@ -35,11 +36,7 @@ export async function signUp(formData: FormData) {
 //--------------- pet actions ------------------//
 export async function addPet(pet: unknown) {
   await sleep();
-  const session = await auth();
-
-  if (!session?.user) {
-    redirect("/login");
-  }
+  const session = await checkAuth();
 
   const validatedPet = petFormSchema.safeParse(pet);
 
@@ -66,10 +63,7 @@ export async function editPet(petId: unknown, updatedPet: unknown) {
   await sleep();
 
   // Authentication check
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/login");
-  }
+  const session = await checkAuth();
 
   // Validation
   const validatedPet = petFormSchema.safeParse(updatedPet);
@@ -107,10 +101,7 @@ export async function deletePet(petId: unknown) {
   await sleep();
 
   // Authentcation check
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/login");
-  }
+  const session = await checkAuth();
 
   // Validation
   const validatedId = petIdSchema.safeParse(petId);
