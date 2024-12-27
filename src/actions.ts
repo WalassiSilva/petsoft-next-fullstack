@@ -4,13 +4,14 @@ import prisma from "@/lib/db";
 import { sleep } from "./lib/utils";
 import { revalidatePath } from "next/cache";
 import { petFormSchema, petIdSchema } from "./lib/validations";
-import { signIn, signOut } from "./lib/auth";
+import { auth, signIn, signOut } from "./lib/auth";
 import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
 
 //--------------- user actions ------------------//
 export async function logIn(formData: FormData) {
-  const authData = Object.fromEntries(formData.entries());
-  await signIn("credentials", authData);
+  await signIn("credentials", formData);
+  redirect("/app/dashboard");
 }
 
 export async function logOut() {
@@ -34,13 +35,26 @@ export async function signUp(formData: FormData) {
 //--------------- pet actions ------------------//
 export async function addPet(pet: unknown) {
   await sleep();
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   const validatedPet = petFormSchema.safeParse(pet);
 
-  if (!validatedPet.success) return { message: validatedPet.error.message };
+  if (!validatedPet.success) return { message: "Invalid pet data." };
 
   try {
     await prisma.pet.create({
-      data: validatedPet.data,
+      data: {
+        ...validatedPet.data,
+        user: {
+          connect: {
+            id: session.user.id,
+          },
+        },
+      },
     });
     revalidatePath("/app", "layout");
   } catch (error) {
