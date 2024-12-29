@@ -9,12 +9,18 @@ export default function AuthForm({ type }: { type: "login" | "signup" }) {
     <form action={type === "login" ? logIn : signUp} className="space-y-2">
       <div className="space-y-1">
         <Label htmlFor="email">Email</Label>
-        <Input id="email" name="email" type="email" />
+        <Input id="email" name="email" type="email" required max={100} />
       </div>
 
       <div className="space-y-1">
         <Label htmlFor="password">Password</Label>
-        <Input id="password" name="password" type="password" />
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          required
+          max={100}
+        />
       </div>
 
       <Button>{type === "login" ? "Log In" : "Sign Up"}</Button>
