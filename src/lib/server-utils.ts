@@ -1,7 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
-import { Pet, User } from "@prisma/client";
+import { Pet, Prisma, User } from "@prisma/client";
 import prisma from "./db";
 
 export async function checkAuth() {
@@ -50,11 +50,19 @@ export async function getPetsByUserId(userId: User["id"]) {
 }
 
 export async function createUser(email: string, password: string) {
-  const user = await prisma.user.create({
-    data: {
-      email,
-      hashedPassword: password,
-    },
-  });
-  return user;
+  try {
+    await prisma.user.create({
+      data: {
+        email,
+        hashedPassword: password,
+      },
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return { message: "Email already exists." };
+      }
+    }
+  }
+  return { message: "Could not create user." };
 }
